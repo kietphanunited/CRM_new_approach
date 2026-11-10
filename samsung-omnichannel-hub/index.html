@@ -1,0 +1,826 @@
+<title>Samsung VN Omnichannel Hub</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap">
+<style>
+/* Layout: a single CEO report page read top-down (Minto): conclusion → architecture → spearheads → loyalty → simulation → roadmap → risks. Main column 1080px. */
+:root{
+  --bg:#f4f6f9; --surface:#ffffff; --ink:#0d1726; --muted:#5a6578; --line:#dde2ea;
+  --accent:#1d45c9; --accent-soft:#e6ecfb;
+  --whs:#9aa4b4; --d2c:#e0861b; --b2b:#0e8a7c; --c-mkt:#cf4f2a; --c-ret:#7656b8;
+  --good:#0f8a4b; --warn:#c2730a; --bad:#c23a2b;
+  --f-display:"Be Vietnam Pro",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-body:"Be Vietnam Pro",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-num:"JetBrains Mono",ui-monospace,"SFMono-Regular",Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0c121c; --surface:#141c29; --ink:#e8edf5; --muted:#9aa6b8; --line:#26324a;
+  --accent:#6d8ef5; --accent-soft:#1b2747; --whs:#6c788b; --d2c:#f0a046; --b2b:#2fb8a7; --c-mkt:#f07a55; --c-ret:#a88ae8;
+  --good:#3cc07a; --warn:#e9a23b; --bad:#ef6a5a; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0c121c; --surface:#141c29; --ink:#e8edf5; --muted:#9aa6b8; --line:#26324a;
+  --accent:#6d8ef5; --accent-soft:#1b2747; --whs:#6c788b; --d2c:#f0a046; --b2b:#2fb8a7; --c-mkt:#f07a55; --c-ret:#a88ae8;
+  --good:#3cc07a; --warn:#e9a23b; --bad:#ef6a5a; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.55;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.wrap{max-width:1080px;margin:0 auto;padding-block:32px 64px;display:flex;flex-direction:column;gap:56px}
+h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;letter-spacing:-.01em}
+h1{font-size:clamp(28px,4.4vw,44px);font-weight:800;line-height:1.12}
+h2{font-size:clamp(22px,2.8vw,28px);font-weight:700;line-height:1.2}
+h3{font-size:16px;font-weight:700}
+p{margin:0}
+.eyebrow{font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--accent)}
+.lede{color:var(--muted);max-width:68ch;font-size:16px}
+.num{font-family:var(--f-num);font-variant-numeric:tabular-nums}
+section{display:flex;flex-direction:column;gap:20px}
+.sec-head{display:flex;flex-direction:column;gap:8px}
+
+/* Strategic recommendations */
+.recs{background:var(--surface);border:1px solid var(--line);border-top:4px solid var(--accent);border-radius:14px;padding:22px;display:flex;flex-direction:column;gap:16px}
+.recs ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
+.recs li{display:grid;grid-template-columns:96px 1fr auto;gap:14px;align-items:baseline;padding:12px 0;border-top:1px solid var(--line)}
+.recs li:first-child{border-top:0}
+.recs .pr{font-family:var(--f-num);font-size:12px;font-weight:700;color:var(--accent)}
+.recs .tx b{display:block;font-size:15.5px;margin-bottom:2px}
+.recs .tx span{color:var(--muted);font-size:14px}
+.recs .hz{font-family:var(--f-num);font-size:11.5px;font-weight:700;color:var(--muted);background:var(--bg);border:1px solid var(--line);border-radius:999px;padding:3px 10px;white-space:nowrap}
+@media (max-width:720px){.recs li{grid-template-columns:1fr;gap:4px}.recs .hz{justify-self:start}}
+
+/* Hero */
+.hero{display:flex;flex-direction:column;gap:18px}
+.thesis{border-left:4px solid var(--accent);padding:14px 18px;background:var(--surface);border-radius:0 10px 10px 0;font-size:16px;max-width:80ch}
+.thesis b{color:var(--accent)}
+.pillars{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.pillar{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:18px;display:flex;flex-direction:column;gap:8px;min-width:0}
+.pillar .k{font-family:var(--f-num);font-size:12px;color:var(--muted)}
+.pillar p{color:var(--muted);font-size:14px}
+.metaphor{display:flex;gap:14px;align-items:flex-start;background:var(--accent-soft);border-radius:12px;padding:16px 18px;font-size:14.5px}
+.metaphor strong{color:var(--accent)}
+.mix-now{display:flex;flex-direction:column;gap:6px}
+.mixbar{display:flex;height:30px;border-radius:6px;overflow:hidden;font-family:var(--f-num);font-size:12px;font-weight:700}
+.mixbar span{display:flex;align-items:center;padding-inline:10px;color:#fff;white-space:nowrap}
+.legend{display:flex;flex-wrap:wrap;gap:14px;font-size:12.5px;color:var(--muted)}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:6px;vertical-align:-1px}
+
+/* Architecture */
+.arch{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px;display:flex;flex-direction:column;gap:6px}
+.layer{display:grid;grid-template-columns:150px 1fr;gap:14px;align-items:stretch}
+.layer-label{font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);display:flex;flex-direction:column;justify-content:center;gap:2px}
+.layer-label small{text-transform:none;letter-spacing:0;font-weight:500}
+.nodes{display:grid;grid-template-columns:repeat(6,1fr);gap:8px}
+.node{border:1.5px solid var(--line);border-radius:9px;padding:9px 10px;font-size:12.5px;line-height:1.3;background:var(--bg);transition:all .25s;min-width:0}
+.node b{display:block;font-size:13px;margin-bottom:2px}
+.node span{color:var(--muted);font-size:11.5px}
+.layer.hub .nodes .node{background:var(--accent-soft);border-color:color-mix(in srgb,var(--accent) 35%,var(--line))}
+.node.on{border-color:var(--d2c);background:color-mix(in srgb,var(--d2c) 16%,var(--surface));box-shadow:0 0 0 3px color-mix(in srgb,var(--d2c) 25%,transparent);transform:translateY(-2px)}
+.node.dim{opacity:.38}
+.flow{display:grid;grid-template-columns:150px 1fr;gap:14px}
+.flow div:last-child{height:16px;background:linear-gradient(var(--line),var(--line)) center/2px 100% no-repeat}
+.scen-bar{display:flex;flex-wrap:wrap;gap:8px}
+.chip{font-family:var(--f-body);font-size:13.5px;font-weight:600;padding:9px 14px;border-radius:999px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer}
+.chip:hover{border-color:var(--accent)}
+.chip[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:#fff}
+.chip:focus-visible,button:focus-visible,input:focus-visible{outline:3px solid color-mix(in srgb,var(--accent) 55%,transparent);outline-offset:2px}
+.player{display:grid;grid-template-columns:1fr auto;gap:14px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px 16px}
+.player .step-n{font-family:var(--f-num);font-size:12px;color:var(--d2c);font-weight:700}
+.player .step-t{font-weight:600;font-size:15px}
+.player .step-why{color:var(--muted);font-size:13.5px}
+.ctrls{display:flex;gap:8px}
+.btn{font-family:var(--f-body);font-weight:600;font-size:13.5px;border-radius:8px;border:1.5px solid var(--line);background:var(--bg);color:var(--ink);padding:8px 14px;cursor:pointer}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.dots{display:flex;gap:5px;margin-top:6px}
+.dots i{width:22px;height:4px;border-radius:2px;background:var(--line)}
+.dots i.done{background:var(--d2c)}
+
+/* Simulator */
+.sim{display:grid;grid-template-columns:330px 1fr;gap:18px;align-items:start}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px;display:flex;flex-direction:column;gap:16px;min-width:0}
+.presets{display:flex;gap:6px;flex-wrap:wrap}
+.ctl{display:flex;flex-direction:column;gap:4px}
+.ctl label{display:flex;justify-content:space-between;gap:10px;font-size:13px;font-weight:600}
+.ctl label output{font-family:var(--f-num);color:var(--accent);font-weight:700}
+.ctl small{color:var(--muted);font-size:11.5px;line-height:1.35}
+input[type=range]{width:100%;accent-color:var(--accent)}
+.grp{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);border-top:1px solid var(--line);padding-top:12px}
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.kpi{border:1px solid var(--line);border-radius:10px;padding:12px;display:flex;flex-direction:column;gap:2px;min-width:0}
+.kpi .l{font-size:11.5px;color:var(--muted);font-weight:600}
+.kpi .v{font-family:var(--f-num);font-size:22px;font-weight:700;line-height:1.2}
+.kpi .d{font-size:11.5px;font-family:var(--f-num)}
+.up{color:var(--good)} .down{color:var(--bad)} .flat{color:var(--muted)}
+.chart-box{overflow-x:auto}
+.chart-box svg{display:block;width:100%;min-width:520px;height:auto}
+.tbl-box{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:13px;min-width:520px}
+th,td{padding:8px 10px;border-bottom:1px solid var(--line);text-align:right;white-space:nowrap}
+th:first-child,td:first-child{text-align:left}
+th{font-size:11.5px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.05em}
+td{font-family:var(--f-num);font-variant-numeric:tabular-nums}
+tr.total td{font-weight:700;border-top:2px solid var(--ink)}
+.verdict{border-radius:10px;padding:12px 14px;font-size:14px;background:var(--accent-soft)}
+.note{font-size:12px;color:var(--muted)}
+
+/* Roadmap */
+.road{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.phase{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:18px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.phase .when{font-family:var(--f-num);font-size:12px;color:var(--accent);font-weight:700}
+.phase ul{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:5px;font-size:14px}
+.phase .gate{margin-top:auto;font-size:12.5px;border-top:1px dashed var(--line);padding-top:10px;color:var(--muted)}
+.phase .gate b{color:var(--ink)}
+
+/* Risk */
+.risk td,.risk th{text-align:left;white-space:normal;font-family:var(--f-body)}
+.risk td:first-child{font-weight:600;width:22%}
+.sev{display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:999px;white-space:nowrap}
+.sev.h{background:color-mix(in srgb,var(--bad) 16%,transparent);color:var(--bad)}
+.sev.m{background:color-mix(in srgb,var(--warn) 18%,transparent);color:var(--warn)}
+.ask{background:var(--ink);color:var(--bg);border-radius:14px;padding:22px;display:flex;flex-direction:column;gap:12px}
+.ask h2{color:var(--bg)}
+.ask ol{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:6px}
+
+/* Spider matrix */
+.spider{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:18px;align-items:start}
+.radar-box{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.radar-box svg{display:block;width:100%;height:auto}
+.series{display:flex;flex-wrap:wrap;gap:6px}
+.series .chip{font-size:12.5px;padding:6px 12px;display:inline-flex;align-items:center;gap:7px}
+.series .chip i{width:14px;height:3px;border-radius:2px;display:inline-block}
+.series .chip[aria-pressed="true"]{background:var(--surface);color:var(--ink);border-color:var(--ink)}
+.series .chip[aria-pressed="false"]{opacity:.5}
+.axis-hit{cursor:pointer}
+.axis-hit:hover text,.axis-hit.sel text{fill:var(--accent)}
+.detail{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px;display:flex;flex-direction:column;gap:12px;min-width:0}
+.detail .role{align-self:flex-start}
+.detail dl{margin:0;display:grid;grid-template-columns:110px 1fr;gap:8px 12px;font-size:14px}
+.detail dt{color:var(--muted);font-size:12px;font-weight:600;padding-top:2px}
+.detail dd{margin:0}
+.gapbar{display:flex;flex-direction:column;gap:5px;font-size:12px}
+.gapbar .row{display:grid;grid-template-columns:120px 1fr 32px;gap:8px;align-items:center}
+.gapbar .track{height:8px;background:var(--bg);border-radius:4px;overflow:hidden}
+.gapbar .fill{height:100%;border-radius:4px}
+.tag{display:inline-block;font-size:11.5px;font-weight:700;padding:3px 10px;border-radius:999px;white-space:nowrap}
+.tag.spear{background:color-mix(in srgb,var(--accent) 16%,transparent);color:var(--accent)}
+.tag.par{background:color-mix(in srgb,var(--muted) 16%,transparent);color:var(--muted)}
+.tag.cede{background:color-mix(in srgb,var(--warn) 16%,transparent);color:var(--warn)}
+.mx td input{width:52px;font-family:var(--f-num);font-size:13px;padding:4px 6px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--ink);text-align:right}
+.mx td.ax{font-family:var(--f-body);font-weight:600;cursor:pointer}
+.mx tr.sel td{background:var(--accent-soft)}
+.mx th small{display:block;text-transform:none;letter-spacing:0;font-weight:500}
+.takeaway{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.takeaway div{border-top:3px solid var(--line);padding-top:10px;font-size:13.5px;color:var(--muted)}
+.takeaway div b{display:block;color:var(--ink);font-size:14px;margin-bottom:3px}
+.takeaway .t1{border-color:var(--accent)} .takeaway .t2{border-color:var(--muted)} .takeaway .t3{border-color:var(--warn)}
+
+/* Loyalty */
+.principle{display:grid;grid-template-columns:1fr auto 1fr;gap:14px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px}
+.principle .side{display:flex;flex-direction:column;gap:4px}
+.principle .side b{font-size:18px;font-family:var(--f-display)}
+.principle .side span{color:var(--muted);font-size:13.5px}
+.principle .mid{font-family:var(--f-num);font-size:22px;color:var(--accent);font-weight:700}
+.loop{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;position:relative}
+.loop .st{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:6px;min-width:0;position:relative}
+.loop .st .n{font-family:var(--f-num);font-size:12px;font-weight:700;color:var(--accent)}
+.loop .st p{font-size:13px;color:var(--muted)}
+.loop .st.burn{border-color:var(--accent);background:var(--accent-soft)}
+.loop-back{font-size:12.5px;color:var(--muted);text-align:right;font-family:var(--f-num)}
+.tiers{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.tier{border-radius:12px;padding:16px;display:flex;flex-direction:column;gap:8px;border:1px solid var(--line);background:var(--surface);min-width:0}
+.tier .tn{font-family:var(--f-display);font-weight:800;font-size:17px}
+.tier .cond{font-size:12.5px;color:var(--muted);border-bottom:1px dashed var(--line);padding-bottom:8px}
+.tier ul{margin:0;padding-left:16px;font-size:13px;display:flex;flex-direction:column;gap:4px}
+.tier.t4{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.tier.t4 .cond{color:color-mix(in srgb,var(--bg) 70%,var(--ink));border-color:color-mix(in srgb,var(--bg) 30%,var(--ink))}
+.tier.t3{border-color:var(--accent)}
+.eb{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.eb .box{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:16px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.eb table{min-width:0}
+.eb td{font-family:var(--f-body);white-space:normal}
+.eb td:last-child{font-family:var(--f-num);white-space:nowrap}
+.funnel{display:flex;flex-direction:column;gap:8px}
+.fstep{display:grid;grid-template-columns:200px 1fr 120px;gap:12px;align-items:center;font-size:13px}
+.fstep .bar{height:26px;border-radius:5px;background:var(--accent);min-width:6px;transition:width .3s}
+.fstep .val{font-family:var(--f-num);font-weight:700;text-align:right}
+.fstep .lab{color:var(--muted)}
+.fstep .lab b{color:var(--ink);display:block;font-size:13.5px}
+.lever{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.lever div{font-size:13.5px;padding:12px 14px;border-radius:10px;background:var(--bg);border:1px solid var(--line)}
+.lever b{display:block;margin-bottom:2px}
+
+@media (max-width:900px){
+  .spider{grid-template-columns:1fr}
+  .loop{grid-template-columns:repeat(2,1fr)}
+  .tiers{grid-template-columns:repeat(2,1fr)}
+  .sim{grid-template-columns:1fr}
+  .nodes{grid-template-columns:repeat(3,1fr)}
+  .kpis{grid-template-columns:repeat(2,1fr)}
+}
+@media (max-width:720px){
+  .pillars,.road{grid-template-columns:1fr}
+  .layer,.flow{grid-template-columns:1fr;gap:6px}
+  .flow div:first-child{display:none}
+  .nodes{grid-template-columns:repeat(2,1fr)}
+  .player{grid-template-columns:1fr}
+  .takeaway,.eb,.lever{grid-template-columns:1fr}
+  .loop,.tiers{grid-template-columns:1fr}
+  .principle{grid-template-columns:1fr;text-align:left}
+  .fstep{grid-template-columns:1fr 90px}
+  .fstep .bar{grid-column:1/-1;grid-row:2}
+  .detail dl{grid-template-columns:1fr}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<div class="wrap">
+
+<!-- 0. STRATEGIC RECOMMENDATIONS -->
+<section class="recs" aria-labelledby="recs-h">
+  <div class="sec-head">
+    <div class="eyebrow">Strategic Recommendations</div>
+    <h2 id="recs-h">Seven priorities, in order, to move from 5% to 25–30% directly controlled revenue</h2>
+  </div>
+  <ul>
+    <li><span class="pr">Priority 1</span><span class="tx"><b>Protect the core: one price policy across every channel</b><span>Never price D2C below retailers. Win on experience, not discounts. Brief TGDĐ, CellphoneS and the marketplaces before launch.</span></span><span class="hz">Now</span></li>
+    <li><span class="pr">Priority 2</span><span class="tx"><b>Build the Hub foundation: one inventory, one order system</b><span>Connect Samsung.com, the app and both flagships. Pilot 2-hour store pickup at the HCMC flagship, Hanoi 2 months later.</span></span><span class="hz">0–6 months</span></li>
+    <li><span class="pr">Priority 3</span><span class="tx"><b>Make Samsung Account the front door for every device</b><span>Register devices bought anywhere, including marketplaces, with an e-warranty reward. Loyalty points are earned anywhere and redeemed only on Samsung channels.</span></span><span class="hz">0–12 months</span></li>
+    <li><span class="pr">Priority 4</span><span class="tx"><b>Invest in five spearheads, cede price and reach</b><span>Exclusives and early launch, trade-in and upgrade, expert advice, after-sales peace of mind, personalised ecosystem.</span></span><span class="hz">6–18 months</span></li>
+    <li><span class="pr">Priority 5</span><span class="tx"><b>Launch a direct B2B portal</b><span>Tiered pricing, credit limits, VAT invoicing and device management for enterprises and SMEs.</span></span><span class="hz">6–18 months</span></li>
+    <li><span class="pr">Priority 6</span><span class="tx"><b>Govern with a dedicated team and stage-gated funding</b><span>An Omnichannel team with its own P&amp;L. Review four KPIs in monthly S&amp;OP: controlled revenue share, blended margin, D2C cost to serve, marketplace-to-D2C conversion.</span></span><span class="hz">Now</span></li>
+    <li><span class="pr">Priority 7</span><span class="tx"><b>Turn retailers into network partners</b><span>Pay retail staff for device registrations. In phase 3, let retailers fulfil D2C orders from their stock for a commission.</span></span><span class="hz">18–36 months</span></li>
+  </ul>
+</section>
+
+<!-- 1. CONCLUSION -->
+<header class="hero">
+  <div class="eyebrow">CEO proposal · Samsung Vietnam · Omnichannel strategy</div>
+  <h1>Build an Omnichannel Hub to regain control of customers, pricing and margin</h1>
+  <p class="thesis"><b>Recommendation:</b> Samsung should build <b>one central "brain"</b> that connects inventory, orders, pricing and customer data across every channel, then use it to grow the revenue it controls directly (D2C + B2B) from <b>5% to roughly 25–30% within 3 years</b>. This is a strategy to <b>rebalance</b> channels, not to abandon partners: 70%+ of revenue still flows through marketplaces and retail chains, but Samsung owns the data and gains leverage in wholesale price negotiations.</p>
+
+  <div class="mix-now">
+    <div class="legend"><span><i style="background:var(--whs)"></i>Wholesale via marketplaces/retailers</span><span><i style="background:var(--d2c)"></i>D2C (web, app, flagship)</span><span><i style="background:var(--b2b)"></i>Direct B2B</span></div>
+    <div class="mixbar" aria-label="Current revenue mix"><span style="width:95%;background:var(--whs)">Today · 95% wholesale</span><span style="width:5%;background:var(--d2c)">5%</span></div>
+    <div class="mixbar" aria-label="Target mix in year 3"><span style="width:72%;background:var(--whs)">Year 3 · ~72%</span><span style="width:20%;background:var(--d2c)">D2C 20%</span><span style="width:8%;background:var(--b2b)">8%</span></div>
+  </div>
+
+  <div class="pillars">
+    <div class="pillar"><span class="k">Pillar 1 · Control</span><h3>Own the customer data and relationship</h3><p>Today marketplaces and retail chains know who Samsung's customers are; Samsung does not. The Hub brings every transaction into one customer profile (Samsung Account).</p></div>
+    <div class="pillar"><span class="k">Pillar 2 · Profit</span><h3>Keep the margin retailers currently capture</h3><p>Every D2C order keeps the gap between wholesale and retail price, minus delivery, marketing and operating costs. B2B brings higher margin with large, stable orders.</p></div>
+    <div class="pillar"><span class="k">Pillar 3 · O2O experience</span><h3>Turn the two flagships into network hubs</h3><p>The Hanoi and HCMC flagships become showroom, 2-hour pickup point, setup station, and returns and service desk for orders from every channel.</p></div>
+  </div>
+
+  <div class="metaphor"><div><strong>A simple way to picture it:</strong> the Hub works like an <b>airport control tower</b>. Planes (orders) arrive from many directions: app, flagship, marketplaces, businesses. Without a tower, each runway fends for itself, with clashes and shortages. With a tower, every flight is visible on one screen and routed to the best runway (nearest warehouse, store with stock).</div></div>
+</header>
+
+<!-- 2. ARCHITECTURE + O2O -->
+<section>
+  <div class="sec-head">
+    <div class="eyebrow">What the Hub is made of</div>
+    <h2>Three layers: sales channels on top, the brain in the middle, operations below</h2>
+    <p class="lede">Pick a customer scenario below and press "Next step" to see which blocks the order passes through.</p>
+  </div>
+
+  <div class="scen-bar" role="group" aria-label="Choose a scenario">
+    <button class="chip" data-s="bopis" aria-pressed="true">Buy online, pick up at flagship in 2 hours</button>
+    <button class="chip" data-s="aisle" aria-pressed="false">See it in store, deliver to home</button>
+    <button class="chip" data-s="b2b" aria-pressed="false">A company orders 300 tablets</button>
+    <button class="chip" data-s="mkt" aria-pressed="false">Buy on a marketplace, exchange at flagship</button>
+  </div>
+
+  <div class="player" aria-live="polite">
+    <div>
+      <div class="step-n" id="stepN">Step 1/6</div>
+      <div class="step-t" id="stepT"></div>
+      <div class="step-why" id="stepW"></div>
+      <div class="dots" id="dots"></div>
+    </div>
+    <div class="ctrls"><button class="btn" id="prev">Back</button><button class="btn primary" id="next">Next step</button></div>
+  </div>
+
+  <div class="arch" id="arch">
+    <div class="layer">
+      <div class="layer-label">Sales channels<small>Where customers meet Samsung</small></div>
+      <div class="nodes">
+        <div class="node" data-id="web"><b>Samsung.com & App</b><span>Online D2C channel</span></div>
+        <div class="node" data-id="store"><b>Flagships HN & HCMC</b><span>Experience, pickup</span></div>
+        <div class="node" data-id="b2bp"><b>B2B portal</b><span>Enterprise, SME, projects</span></div>
+        <div class="node" data-id="social"><b>Zalo OA & Livestream</b><span>Advice, closing sales</span></div>
+        <div class="node" data-id="mkt"><b>Official marketplace stores</b><span>Shopee, Lazada, TikTok</span></div>
+        <div class="node" data-id="retail"><b>Retail chain partners</b><span>TGDĐ, CellphoneS, FPT…</span></div>
+      </div>
+    </div>
+    <div class="flow"><div></div><div></div></div>
+    <div class="layer hub">
+      <div class="layer-label">Core Hub<small>The shared brain</small></div>
+      <div class="nodes">
+        <div class="node" data-id="oms"><b>Order management (OMS)</b><span>One place for every order</span></div>
+        <div class="node" data-id="atp"><b>Real-time inventory</b><span>Warehouses + 2 stores + partners</span></div>
+        <div class="node" data-id="cdp"><b>Customer 360° profile</b><span>Samsung Account, CDP</span></div>
+        <div class="node" data-id="price"><b>Pricing & promotions</b><span>Minimum advertised price</span></div>
+        <div class="node" data-id="loyal"><b>Loyalty</b><span>Points, trade-in, extended warranty</span></div>
+        <div class="node" data-id="b2be"><b>B2B quoting</b><span>Tiered pricing, credit limits</span></div>
+      </div>
+    </div>
+    <div class="flow"><div></div><div></div></div>
+    <div class="layer">
+      <div class="layer-label">Operations & data<small>Existing systems + partners</small></div>
+      <div class="nodes">
+        <div class="node" data-id="erp"><b>ERP</b><span>Invoicing, accounting</span></div>
+        <div class="node" data-id="wms"><b>Central warehouses</b><span>North & South</span></div>
+        <div class="node" data-id="tpl"><b>Delivery partners</b><span>Fast delivery, installation</span></div>
+        <div class="node" data-id="pay"><b>Payments & instalments</b><span>E-wallets, cards, 0% instalments</span></div>
+        <div class="node" data-id="svc"><b>Warranty & service</b><span>Service centres</span></div>
+        <div class="node" data-id="ai"><b>AI forecasting → S&OP</b><span>Demand by channel and region</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 2b. SPIDER MATRIX -->
+<section>
+  <div class="sec-head">
+    <div class="eyebrow">Differentiation spearheads</div>
+    <h2>Samsung's own channel won't win on price. It wins on <span id="spearN">5</span> things marketplaces and retailers can't match</h2>
+    <p class="lede">Eight reasons customers choose where to buy, scored 1–5. Click an axis on the chart or in the table to see the concrete play. Scores can be edited directly in the table, for example once customer survey data is in.</p>
+  </div>
+  <div class="spider">
+    <div class="radar-box">
+      <div class="series" role="group" aria-label="Show or hide comparison series">
+        <button class="chip" data-ser="target" aria-pressed="true"><i style="background:var(--accent)"></i>Samsung D2C target</button>
+        <button class="chip" data-ser="today" aria-pressed="true"><i style="background:var(--muted)"></i>Samsung D2C today</button>
+        <button class="chip" data-ser="mkt" aria-pressed="true"><i style="background:var(--c-mkt)"></i>Marketplaces</button>
+        <button class="chip" data-ser="ret" aria-pressed="true"><i style="background:var(--c-ret)"></i>Retail chains</button>
+      </div>
+      <svg id="radar" viewBox="0 0 600 520" role="img" aria-label="Spider chart comparing Samsung D2C with marketplaces and retail chains"></svg>
+    </div>
+    <div class="detail" id="detail" aria-live="polite"></div>
+  </div>
+  <div class="tbl-box">
+    <table class="mx" id="mx"></table>
+  </div>
+  <div class="takeaway">
+    <div class="t1"><b>Spearhead (invest heavily)</b>Samsung beats the strongest competitor by 1 point or more. This is the brand promise of the D2C channel.</div>
+    <div class="t2"><b>Parity (good enough)</b>No need to lead, just don't give customers a reason to leave.</div>
+    <div class="t3"><b>Deliberately cede</b>Let marketplaces and retailers win here. This avoids channel conflict and protects partners who carry 95% of revenue.</div>
+  </div>
+  <p class="note">Scores are illustrative and should be validated with customer surveys and mystery shopping before presenting.</p>
+</section>
+
+<!-- 2c. LOYALTY -->
+<section>
+  <div class="sec-head">
+    <div class="eyebrow">Loyalty that pulls customers to D2C</div>
+    <h2>Wherever customers buy, they become Samsung's customers once the device is linked to a Samsung Account</h2>
+    <p class="lede">Every Galaxy asks the user to sign in to a Samsung Account at first setup. TVs and appliances have SmartThings. This is a door marketplaces and retailers do not control. Loyalty turns that door into a path back to Samsung's own channels.</p>
+  </div>
+
+  <div class="principle">
+    <div class="side"><span>Earn points</span><b>Anywhere</b><span>Buy on a marketplace, at TGDĐ, CellphoneS or Samsung.com and earn points when the device is registered</span></div>
+    <div class="mid">→</div>
+    <div class="side"><span>Redeem points</span><b>Only on Samsung channels</b><span>Points can only be redeemed on Samsung.com, the app and at the 2 flagships</span></div>
+  </div>
+
+  <div class="loop">
+    <div class="st"><span class="n">1 · Buy</span><h3>Buy anywhere</h3><p>Marketplace, retailer or Samsung channel. Retailers still sell the device and lose no revenue.</p></div>
+    <div class="st"><span class="n">2 · Activate</span><h3>Link the device to a Samsung Account</h3><p>At device setup, by scanning the QR in the box, or via a Zalo mini app. Instant reward: +6 months of e-warranty.</p></div>
+    <div class="st"><span class="n">3 · Accumulate</span><h3>Earn points, move up tiers</h3><p>Tier is based on the number of devices in the ecosystem, regardless of where they were bought.</p></div>
+    <div class="st burn"><span class="n">4 · Redeem</span><h3>Redeem on Samsung channels</h3><p>Accessories, Care+, trade-in bonus, early pre-order. This is the first D2C purchase.</p></div>
+    <div class="st"><span class="n">5 · Buy again</span><h3>Next device bought direct</h3><p>Buying on Samsung channels earns 3× points, so customers come back on their own.</p></div>
+  </div>
+  <div class="loop-back">↻ back to step 3, each loop ties the customer closer to Samsung</div>
+
+  <div class="tiers">
+    <div class="tier"><span class="tn">Member</span><span class="cond">1 registered device</span><ul><li>+6 months e-warranty</li><li>Welcome accessory voucher</li><li>Maintenance reminders</li></ul></div>
+    <div class="tier"><span class="tn">Silver</span><span class="cond">2 devices or VND 15M spend/12 months</span><ul><li>Extra 5% trade-in bonus</li><li>10% off Care+</li><li>Video consultation with an expert</li></ul></div>
+    <div class="tier t3"><span class="tn">Gold</span><span class="cond">3–4 devices or VND 40M spend/12 months</span><ul><li>48-hour early pre-order</li><li>Free in-home setup</li><li>Priority repair with loaner device</li></ul></div>
+    <div class="tier t4"><span class="tn">Platinum</span><span class="cond">5+ devices or VND 100M spend/12 months</span><ul><li>Personal advisor at the flagship</li><li>Private launch events</li><li>Guaranteed buy-back, annual upgrade</li></ul></div>
+  </div>
+
+  <div class="eb">
+    <div class="box"><h3>How to earn</h3>
+      <table><tr><th>Action</th><th>Points</th></tr>
+      <tr><td>Register a device bought on a marketplace or at a retailer</td><td>1% of value</td></tr>
+      <tr><td>Buy on Samsung.com, app, flagship</td><td>3% of value</td></tr>
+      <tr><td>Connect another device to SmartThings</td><td>+200 pts</td></tr>
+      <tr><td>Refer a friend who buys a device</td><td>+500 pts</td></tr>
+      <tr><td>Join a workshop at a flagship</td><td>+100 pts</td></tr></table></div>
+    <div class="box"><h3>How to redeem (Samsung channels only)</h3>
+      <table><tr><th>Redeem for</th><th>Why</th></tr>
+      <tr><td>Accessories: cases, chargers, Buds, Watch bands</td><td>High margin</td></tr>
+      <tr><td>Samsung Care+ plans</td><td>Service revenue</td></tr>
+      <tr><td>Extra trade-in bonus on upgrade</td><td>Drives next device</td></tr>
+      <tr><td>Pre-order slots, launch events</td><td>Low cost</td></tr>
+      <tr><td>Never deducted directly from phone price</td><td>Avoids undercutting retailers</td></tr></table></div>
+  </div>
+
+  <div class="panel">
+    <div class="sec-head"><h3>Funnel calculator: how much D2C revenue does loyalty generate per year?</h3><p class="note">Illustrative assumptions. The result is compared with the year-3 D2C target from the financial simulation below.</p></div>
+    <div class="sim" style="grid-template-columns:300px 1fr">
+      <div style="display:flex;flex-direction:column;gap:14px">
+        <div class="ctl"><label for="lN">Devices sold via marketplaces & retailers/year <output id="olN"></output></label><input type="range" id="lN" min="0.5" max="8" step="0.1" value="4.5"></div>
+        <div class="ctl"><label for="lReg">Samsung Account registration rate <output id="olReg"></output></label><input type="range" id="lReg" min="5" max="80" step="1" value="45"><small>Biggest lever: warranty reward, QR in the box, sign-in at device setup</small></div>
+        <div class="ctl"><label for="lAct">Members still active <output id="olAct"></output></label><input type="range" id="lAct" min="10" max="90" step="1" value="55"></div>
+        <div class="ctl"><label for="lConv">First purchase on Samsung channels (12 months) <output id="olConv"></output></label><input type="range" id="lConv" min="1" max="40" step="1" value="12"></div>
+        <div class="ctl"><label for="lAov">Average D2C order value <output id="olAov"></output></label><input type="range" id="lAov" min="1" max="20" step="0.5" value="4"><small>VND million. The first order is usually accessories or Care+</small></div>
+        <div class="ctl"><label for="lFreq">Orders/year per converted customer <output id="olFreq"></output></label><input type="range" id="lFreq" min="1" max="4" step="0.1" value="1.6"></div>
+        <div class="ctl"><label for="lCost">Cost of points & benefits <output id="olCost"></output></label><input type="range" id="lCost" min="1" max="10" step="0.5" value="4"><small>% of loyalty-driven D2C revenue</small></div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:16px;min-width:0">
+        <div class="funnel" id="funnel"></div>
+        <div class="kpis">
+          <div class="kpi"><span class="l">D2C revenue from loyalty</span><span class="v" id="lk1"></span><span class="d flat">VND bn/year</span></div>
+          <div class="kpi"><span class="l">After loyalty costs</span><span class="v" id="lk2"></span><span class="d flat">VND bn/year</span></div>
+          <div class="kpi"><span class="l">Share of Y3 D2C target</span><span class="v" id="lk3"></span><span class="d flat" id="lk3d"></span></div>
+          <div class="kpi"><span class="l">New known customers/year</span><span class="v" id="lk4"></span><span class="d flat">data Samsung owns</span></div>
+        </div>
+        <div class="verdict" id="lverdict"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="lever">
+    <div><b>Raise registration of marketplace-bought devices</b>This is the biggest lever in the funnel. Tie e-warranty to the Samsung Account. Print a QR on the box and warranty card. Prompt registration via Zalo when warranty is activated.</div>
+    <div><b>Turn retailers into allies</b>Retail staff earn a small bonus for each device they help a customer register. Retailers still sell the device; Samsung gains a known customer.</div>
+    <div><b>Make the first D2C purchase easy</b>Send a 60-day accessory voucher via Zalo right after device registration. A small, low-risk order gets customers used to Samsung's channel.</div>
+    <div><b>Measure with one number</b>Share of marketplace customers who place a first order on Samsung channels within 12 months. Track it monthly in the S&OP meeting.</div>
+  </div>
+</section>
+
+<!-- 3. FINANCIAL SIMULATION -->
+<section>
+  <div class="sec-head">
+    <div class="eyebrow">3-year simulation</div>
+    <h2>Move the sliders to see how revenue, profit and dependency change</h2>
+    <p class="lede">All default figures are <b>illustrative assumptions</b>, not Samsung internal data. Replace them with the finance team's actual numbers before presenting.</p>
+  </div>
+
+  <div class="sim">
+    <div class="panel">
+      <div class="presets" role="group" aria-label="Scenarios">
+        <button class="chip" data-p="safe" aria-pressed="false">Conservative</button>
+        <button class="chip" data-p="base" aria-pressed="true">Base</button>
+        <button class="chip" data-p="bold" aria-pressed="false">Ambitious</button>
+      </div>
+      <div class="grp">Scale</div>
+      <div class="ctl"><label for="R">Current domestic revenue <output id="oR"></output></label><input type="range" id="R" min="10000" max="80000" step="1000"><small>VND bn/year</small></div>
+      <div class="ctl"><label for="g">Market growth <output id="og"></output></label><input type="range" id="g" min="0" max="15" step="1"></div>
+      <div class="grp">Year-3 channel targets</div>
+      <div class="ctl"><label for="tD">D2C share <output id="otD"></output></label><input type="range" id="tD" min="5" max="40" step="1"><small>Currently 5%</small></div>
+      <div class="ctl"><label for="tB">Direct B2B share <output id="otB"></output></label><input type="range" id="tB" min="0" max="20" step="1"></div>
+      <div class="grp">Unit economics</div>
+      <div class="ctl"><label for="mW">Wholesale gross margin <output id="omW"></output></label><input type="range" id="mW" min="5" max="25" step="1"><small>Falls when marketplaces and retailers squeeze prices</small></div>
+      <div class="ctl"><label for="mD">D2C gross margin <output id="omD"></output></label><input type="range" id="mD" min="10" max="40" step="1"><small>Retail price held at market level, no undercutting retailers</small></div>
+      <div class="ctl"><label for="cD">D2C cost to serve <output id="ocD"></output></label><input type="range" id="cD" min="3" max="20" step="1"><small>Delivery, marketing, store staff, customer service (% of D2C revenue)</small></div>
+      <div class="ctl"><label for="mB">B2B net margin <output id="omB"></output></label><input type="range" id="mB" min="5" max="30" step="1"><small>After account manager team costs</small></div>
+      <div class="grp">Investment & risk</div>
+      <div class="ctl"><label for="cap">Hub build investment (year 1) <output id="ocap"></output></label><input type="range" id="cap" min="50" max="1000" step="25"><small>VND bn: systems, integration, upgrading 2 flagships</small></div>
+      <div class="ctl"><label for="opx">Hub operating cost/year <output id="oopx"></output></label><input type="range" id="opx" min="20" max="400" step="10"></div>
+      <div class="ctl"><label for="cf">Retailer pushback <output id="ocf"></output></label><input type="range" id="cf" min="0" max="40" step="1"><small>For every 100 dong Samsung sells direct, how much extra retailers cut from orders beyond the shifted volume</small></div>
+    </div>
+
+    <div class="panel">
+      <div class="kpis">
+        <div class="kpi"><span class="l">Directly controlled revenue (Y3)</span><span class="v" id="k1"></span><span class="d flat" id="k1d"></span></div>
+        <div class="kpi"><span class="l">Blended gross margin</span><span class="v" id="k2"></span><span class="d" id="k2d"></span></div>
+        <div class="kpi"><span class="l">Cumulative incremental profit</span><span class="v" id="k3"></span><span class="d" id="k3d"></span></div>
+        <div class="kpi"><span class="l">Third-party dependency (Y3)</span><span class="v" id="k4"></span><span class="d up" id="k4d"></span></div>
+      </div>
+      <div class="legend"><span><i style="background:var(--whs)"></i>Wholesale</span><span><i style="background:var(--d2c)"></i>D2C</span><span><i style="background:var(--b2b)"></i>B2B</span><span><i style="background:var(--ink)"></i>Profit (right axis)</span></div>
+      <div class="chart-box"><svg id="chart" viewBox="0 0 640 300" role="img" aria-label="Revenue by channel and profit by year"></svg></div>
+      <div class="tbl-box"><table id="tbl"></table></div>
+      <div class="verdict" id="verdict"></div>
+      <p class="note">Method: channel shares ramp evenly to the year-3 target. Profit = wholesale × wholesale margin + D2C × (D2C margin − cost to serve) + B2B × B2B margin − Hub costs. "Incremental" is versus keeping the 95/5 status quo.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 4. ROADMAP -->
+<section>
+  <div class="sec-head">
+    <div class="eyebrow">Roadmap</div>
+    <h2>Three phases, each with a decision gate before further funding</h2>
+  </div>
+  <div class="road">
+    <div class="phase"><span class="when">Months 0–6 · Foundation</span><h3>Connect web, app and 2 flagships to one inventory</h3>
+      <ul><li>Build the OMS and real-time inventory</li><li>Launch "Buy online, pick up in store in 2 hours"</li><li>Samsung Account as the single sign-in</li><li>Minimum price policy across all channels</li></ul>
+      <div class="gate"><b>Gate:</b> ≥15% of online orders picked up in store; inventory accuracy ≥98%</div></div>
+    <div class="phase"><span class="when">Months 6–18 · Expansion</span><h3>Open the B2B portal and loyalty programme</h3>
+      <ul><li>B2B portal: tiered quotes, credit limits, VAT invoices</li><li>Loyalty: points, trade-in, extended warranty</li><li>Ship-from-store and home delivery from flagships</li><li>Bring marketplace store data into customer profiles</li></ul>
+      <div class="gate"><b>Gate:</b> D2C+B2B ≥15% of revenue; D2C cost to serve ≤10%</div></div>
+    <div class="phase"><span class="when">Months 18–36 · Optimisation</span><h3>Use AI and invite retailers into the network</h3>
+      <ul><li>Channel-level demand forecasts feeding monthly S&OP</li><li>AI shopping assistant on app, Zalo and in store</li><li>Retailers fulfil D2C orders from their stock for a commission</li><li>Expand satellite stores if the numbers hold</li></ul>
+      <div class="gate"><b>Gate:</b> 25–30% directly controlled revenue; blended margin up ≥2 pts</div></div>
+  </div>
+</section>
+
+<!-- 5. RISKS -->
+<section>
+  <div class="sec-head">
+    <div class="eyebrow">Risks to state plainly</div>
+    <h2>The biggest risk is retailer pushback, not technology</h2>
+    <p class="lede">Thế Giới Di Động, CellphoneS and the marketplaces still carry 95% of revenue today. If they see Samsung competing head-on on price, they may cut orders and push other brands. Move the "Retailer pushback" slider to 25% to see the plan turn loss-making.</p>
+  </div>
+  <div class="tbl-box">
+  <table class="risk">
+    <tr><th>Risk</th><th>Level</th><th>Mitigation</th></tr>
+    <tr><td>Channel conflict with retailers</td><td><span class="sev h">High</span></td><td>Never price D2C below retailers. D2C wins on experience, exclusives (colours, bundles, pre-orders) and loyalty. Invite retailers to fulfil orders for a commission in phase 3.</td></tr>
+    <tr><td>D2C cost to serve higher than planned</td><td><span class="sev h">High</span></td><td>Track cost per order monthly. Favour store pickup (cheaper than home delivery). Set a minimum order value for free delivery.</td></tr>
+    <tr><td>Fragmented inventory, surpluses and stock-outs</td><td><span class="sev m">Medium</span></td><td>One shared inventory for all channels, AI forecasts feeding S&OP, clear allocation rules for hot products across channels.</td></tr>
+    <tr><td>Lack of retail operating capability</td><td><span class="sev m">Medium</span></td><td>Set up a dedicated D2C team with its own P&L. Outsource delivery, keep customer data in-house.</td></tr>
+    <tr><td>Marketplaces reduce visibility or raise fees</td><td><span class="sev m">Medium</span></td><td>Keep official marketplace stores as a channel inside the Hub, don't withdraw. Use D2C data as leverage in negotiations.</td></tr>
+  </table>
+  </div>
+</section>
+
+<section class="ask">
+  <div class="eyebrow" style="color:var(--d2c)">Decisions requested from the CEO</div>
+  <h2>Three decisions for the next 90 days</h2>
+  <ol>
+    <li>Approve the phase 1 budget and set up an Omnichannel team with its own P&L.</li>
+    <li>Issue a minimum price policy for all channels, including D2C, and brief the major retailers early.</li>
+    <li>Pick the HCMC flagship to pilot "2-hour store pickup" first, with Hanoi following 2 months later.</li>
+  </ol>
+</section>
+
+</div>
+
+<script>
+(function(){
+/* ---------- O2O scenario player ---------- */
+const S={
+ bopis:[
+  ["Customer browses the new Galaxy in the app and picks 'Pick up at District 1 flagship'",["web","cdp"],"The app recognises the customer via Samsung Account and suggests based on purchase history."],
+  ["The system checks flagship stock in real time",["atp","store"],"'Pick up in 2 hours' only shows when the store actually has stock."],
+  ["Order is created, stock is reserved, standard price applied",["oms","price"],"Same price as at retailers, no undercutting."],
+  ["Customer pays with 0% instalments in the app",["pay","erp"],"E-invoice is generated automatically from the ERP."],
+  ["Zalo confirms the order is ready; in store, staff transfer data from the old phone and suggest earbuds",["social","store"],"The best upsell moment is when the customer holds the new device."],
+  ["Loyalty points added, extended warranty unlocked, data flows into the customer profile",["loyal","cdp","svc"],"Next time Samsung reaches the customer directly, not through a retailer."]
+ ],
+ aisle:[
+  ["Customer looks at a 98-inch TV at the Hanoi flagship",["store","cdp"],"The store showcases products and doesn't need to hold bulky stock."],
+  ["Staff check network-wide inventory on a tablet",["atp","wms"],"The store is out of stock, but the northern warehouse has it."],
+  ["Order is created at the counter, price and promotion pulled from the Hub",["oms","price"],"One pricing policy, wherever the customer buys."],
+  ["Payment in store, invoice from the ERP",["pay","erp"],"Revenue is booked to the D2C channel."],
+  ["Delivery partner delivers and installs at home",["tpl","svc"],"Slot booked via Zalo, customer picks the time."],
+  ["The Hub updates the large-TV demand forecast for Hanoi",["ai"],"The S&OP team sees demand signals earlier than waiting for retailer reports."]
+ ],
+ b2b:[
+  ["A company logs into the B2B portal and requests a quote for 300 tablets",["b2bp","cdp"],"Company profile, purchase history, account owner."],
+  ["The system calculates tiered volume pricing",["b2be","price"],"Account managers only approve exceptions."],
+  ["Credit limit and stock for the 300-unit batch are checked",["b2be","atp","erp"],"30-day credit allowed if within limit."],
+  ["Order enters the OMS, warehouse ships in batches",["oms","wms"],"Can be split into 2 deliveries for 2 offices."],
+  ["Batch delivery with device management software pre-installed",["tpl","svc"],"A value-added service retailers rarely provide."],
+  ["Reminder to refresh devices after 3 years, trade-in offer",["loyal","ai"],"Recurring, predictable revenue."]
+ ],
+ mkt:[
+  ["Customer buys a phone at the official marketplace store",["mkt","oms"],"Marketplace orders also flow into Samsung's OMS."],
+  ["The Hub links the order to the customer profile when the device is activated",["cdp"],"Turns a 'marketplace customer' into a customer Samsung knows by name."],
+  ["Customer wants a different colour and books an exchange at the HCMC flagship",["social","store"],"No need to ship it back to a warehouse via the marketplace."],
+  ["Store checks stock of the other colour and swaps on the spot",["atp","store"],"Marketplace and store inventory are shared."],
+  ["Exchange is recorded and reconciled with the marketplace",["erp","oms"],"Automated accounting reconciliation."],
+  ["Customer is invited into loyalty and given points",["loyal"],"The next purchase can go straight through the app."]
+ ]
+};
+let cur="bopis",idx=0;
+const nodes=[...document.querySelectorAll('.arch .node')];
+const $=id=>document.getElementById(id);
+function renderStep(){
+  const st=S[cur][idx];
+  $('stepN').textContent=`Step ${idx+1}/${S[cur].length}`;
+  $('stepT').textContent=st[0];$('stepW').textContent=st[2];
+  nodes.forEach(n=>{const on=st[1].includes(n.dataset.id);n.classList.toggle('on',on);n.classList.toggle('dim',!on)});
+  $('dots').innerHTML=S[cur].map((_,i)=>`<i class="${i<=idx?'done':''}"></i>`).join('');
+  $('prev').disabled=idx===0;
+  $('next').textContent=idx===S[cur].length-1?'Replay':'Next step';
+}
+document.querySelectorAll('[data-s]').forEach(b=>b.addEventListener('click',()=>{
+  document.querySelectorAll('[data-s]').forEach(x=>x.setAttribute('aria-pressed',x===b));
+  cur=b.dataset.s;idx=0;renderStep();}));
+$('next').addEventListener('click',()=>{idx=idx===S[cur].length-1?0:idx+1;renderStep();});
+$('prev').addEventListener('click',()=>{if(idx>0){idx--;renderStep();}});
+renderStep();
+
+/* ---------- Financial simulator ---------- */
+const P={
+ safe:{R:30000,g:4,tD:12,tB:5,mW:14,mD:28,cD:11,mB:16,cap:350,opx:140,cf:12},
+ base:{R:30000,g:6,tD:20,tB:8,mW:14,mD:31,cD:10,mB:20,cap:300,opx:120,cf:8},
+ bold:{R:30000,g:8,tD:30,tB:12,mW:14,mD:32,cD:9,mB:21,cap:450,opx:180,cf:8}
+};
+const keys=Object.keys(P.base);
+const fmt=n=>Math.round(n).toLocaleString('en-US');
+const pct=n=>(Math.round(n*10)/10).toLocaleString('en-US')+'%';
+const bn=v=>'VND '+fmt(v)+'bn';
+const units={R:bn,g:v=>v+'%',tD:v=>v+'%',tB:v=>v+'%',mW:v=>v+'%',mD:v=>v+'%',cD:v=>v+'%',mB:v=>v+'%',cap:bn,opx:bn,cf:v=>v+'%'};
+function load(p){keys.forEach(k=>{$(k).value=P[p][k]});calc();}
+document.querySelectorAll('[data-p]').forEach(b=>b.addEventListener('click',()=>{
+  document.querySelectorAll('[data-p]').forEach(x=>x.setAttribute('aria-pressed',x===b));load(b.dataset.p);}));
+keys.forEach(k=>$(k).addEventListener('input',()=>{document.querySelectorAll('[data-p]').forEach(x=>x.setAttribute('aria-pressed','false'));calc();}));
+
+function calc(){
+  const v={};keys.forEach(k=>{v[k]=+$(k).value;$('o'+k).textContent=units[k](v[k]);});
+  const g=v.g/100,mW=v.mW/100,mD=v.mD/100,cD=v.cD/100,mB=v.mB/100,cf=v.cf/100;
+  const rows=[];let cum=0,payback=null;
+  for(let t=0;t<=3;t++){
+    const T=v.R*Math.pow(1+g,t);
+    const dS=(5+(v.tD-5)*t/3)/100, bS=(v.tB*t/3)/100;
+    let D=T*dS,B=T*bS;
+    const extra=D-T*0.05+B;
+    const loss=cf*extra;
+    const W=T-D-B-loss;
+    const rev=W+D+B;
+    const opex=t>=1?v.opx:0, capex=t===1?v.cap:0;
+    const gp=W*mW+D*(mD-cD)+B*mB;
+    const profit=gp-opex-capex;
+    const base=T*(0.95*mW+0.05*(mD-cD));
+    const inc=profit-base;
+    if(t>=1){cum+=inc;if(payback===null&&cum>=0)payback=t;}
+    rows.push({t,T,W,D,B,rev,gp,opex,capex,profit,base,inc,cum,own:(D+B)/rev,margin:gp/rev,dep:W/rev});
+  }
+  const y0=rows[0],y3=rows[3];
+  window.simD3=y3.D; if(window.updLoyal) window.updLoyal();
+  $('k1').textContent=pct(y3.own*100);$('k1d').textContent='from '+pct(y0.own*100);
+  $('k2').textContent=pct(y3.margin*100);
+  const dm=(y3.margin-y0.margin)*100;
+  $('k2d').textContent=(dm>=0?'+':'')+(Math.round(dm*10)/10).toLocaleString('en-US')+' pts';
+  $('k2d').className='d '+(dm>0.05?'up':dm<-0.05?'down':'flat');
+  $('k3').textContent=(y3.cum>=0?'+':'−')+fmt(Math.abs(y3.cum))+'bn';
+  $('k3').style.color=y3.cum>=0?'var(--good)':'var(--bad)';
+  $('k3d').textContent=payback?('payback in year '+payback):'no payback within 3 years';
+  $('k3d').className='d '+(payback?'up':'down');
+  $('k4').textContent=pct(y3.dep*100);$('k4d').textContent='from '+pct(y0.dep*100);
+
+  const L=['Today','Year 1','Year 2','Year 3'];
+  const line=(name,f,cls='')=>`<tr class="${cls}"><td>${name}</td>${rows.map(r=>`<td>${f(r)}</td>`).join('')}</tr>`;
+  $('tbl').innerHTML=`<tr><th>VND bn</th>${L.map(l=>`<th>${l}</th>`).join('')}</tr>`+
+   line('Wholesale',r=>fmt(r.W))+line('D2C',r=>fmt(r.D))+line('B2B',r=>fmt(r.B))+
+   line('Total revenue',r=>fmt(r.rev),'total')+
+   line('Gross profit',r=>fmt(r.gp))+line('Hub investment + opex',r=>r.t?'−'+fmt(r.opex+r.capex):'0')+
+   line('Profit after Hub',r=>fmt(r.profit))+line('Incremental vs status quo',r=>r.t?((r.inc>=0?'+':'')+fmt(r.inc)):'—');
+
+  let msg;
+  if(!payback) msg=`<b>Not attractive under these assumptions.</b> After 3 years cumulative incremental profit is still VND ${fmt(y3.cum)}bn. Usually caused by high D2C cost to serve or strong retailer pushback. Try lowering "Retailer pushback" through a shared price policy, or raising the share of store pickup.`;
+  else if(payback<=2) msg=`<b>Attractive.</b> Payback in year ${payback}, cumulative incremental profit of VND ${fmt(y3.cum)}bn after 3 years, and directly controlled revenue rises to ${pct(y3.own*100)}.`;
+  else msg=`<b>Feasible but thin.</b> Payback in year 3. The strategic value (customer data, negotiating leverage) outweighs the short-term profit figure. Tight cost gates are needed.`;
+  $('verdict').innerHTML=msg;
+
+  drawChart(rows);
+}
+
+function drawChart(rows){
+  const svg=$('chart'),W=640,H=300,l=56,r=64,t=16,b=36;
+  const iw=W-l-r,ih=H-t-b;
+  const maxRev=Math.max(...rows.map(x=>x.rev));
+  const niceMax=Math.ceil(maxRev/10000)*10000||10000;
+  const pVals=rows.map(x=>x.profit);
+  let pMin=Math.min(0,...pVals),pMax=Math.max(...pVals);
+  const pStep=Math.pow(10,Math.floor(Math.log10(Math.max(1,pMax-pMin))));
+  pMin=Math.floor(pMin/pStep)*pStep;pMax=Math.ceil(pMax/pStep)*pStep;if(pMax===pMin)pMax=pMin+pStep;
+  const y=v=>t+ih-(v/niceMax)*ih;
+  const yp=v=>t+ih-((v-pMin)/(pMax-pMin))*ih;
+  const bw=iw/4*0.5;
+  const cx=i=>l+iw/4*(i+0.5);
+  let s='';
+  for(let k=0;k<=4;k++){const val=niceMax*k/4,yy=y(val);
+    s+=`<line x1="${l}" x2="${W-r}" y1="${yy}" y2="${yy}" stroke="var(--line)" stroke-width="1"/>`;
+    s+=`<text x="${l-8}" y="${yy+4}" text-anchor="end" font-size="11" fill="var(--muted)" font-family="JetBrains Mono,monospace">${fmt(val/1000)}k</text>`;}
+  for(let k=0;k<=4;k++){const val=pMin+(pMax-pMin)*k/4,yy=yp(val);
+    s+=`<text x="${W-r+8}" y="${yy+4}" font-size="11" fill="var(--muted)" font-family="JetBrains Mono,monospace">${fmt(val)}</text>`;}
+  s+=`<text x="${l-8}" y="${t-4}" text-anchor="end" font-size="10" fill="var(--muted)">Rev bn</text>`;
+  s+=`<text x="${W-r+8}" y="${t-4}" font-size="10" fill="var(--muted)">Profit bn</text>`;
+  const L=['Today','Year 1','Year 2','Year 3'];
+  rows.forEach((d,i)=>{
+    let base=0;
+    [['W','var(--whs)','Wholesale'],['D','var(--d2c)','D2C'],['B','var(--b2b)','B2B']].forEach(([k,c,nm])=>{
+      const h=(d[k]/niceMax)*ih;if(h<=0)return;
+      s+=`<rect x="${cx(i)-bw/2}" y="${y(base+d[k])}" width="${bw}" height="${h}" fill="${c}"><title>${nm}: VND ${fmt(d[k])}bn</title></rect>`;
+      base+=d[k];});
+    s+=`<text x="${cx(i)}" y="${H-12}" text-anchor="middle" font-size="12" fill="var(--ink)" font-weight="600">${L[i]}</text>`;
+  });
+  if(pMin<0&&pMax>0){s+=`<line x1="${l}" x2="${W-r}" y1="${yp(0)}" y2="${yp(0)}" stroke="var(--muted)" stroke-dasharray="3 3"/>`;}
+  const pts=rows.map((d,i)=>`${cx(i)},${yp(d.profit)}`).join(' ');
+  s+=`<polyline points="${pts}" fill="none" stroke="var(--ink)" stroke-width="2.5"/>`;
+  rows.forEach((d,i)=>{s+=`<circle cx="${cx(i)}" cy="${yp(d.profit)}" r="${i===3?5.5:4}" fill="var(--surface)" stroke="var(--ink)" stroke-width="2.5"><title>Profit: VND ${fmt(d.profit)}bn</title></circle>`;});
+  const last=rows[3];
+  s+=`<text x="${cx(3)}" y="${yp(last.profit)-12}" text-anchor="middle" font-size="12" font-weight="700" fill="var(--ink)" font-family="JetBrains Mono,monospace">${fmt(last.profit)}</text>`;
+  svg.innerHTML=s;
+}
+load('base');
+})();
+</script>
+
+<script>
+(function(){
+const $=id=>document.getElementById(id);
+const fmt=n=>Math.round(n).toLocaleString('en-US');
+const f1=n=>(Math.round(n*10)/10).toLocaleString('en-US');
+/* ---------- Spider matrix ---------- */
+const SER=[{k:'target',n:'Samsung target',c:'var(--accent)'},{k:'today',n:'Samsung today',c:'var(--muted)'},{k:'mkt',n:'Marketplaces',c:'var(--c-mkt)'},{k:'ret',n:'Retail chains',c:'var(--c-ret)'}];
+const AX=[
+ {n:'Price & vouchers',l:['Price &','vouchers'],s:{target:3,today:2,mkt:5,ret:4},cust:'Lowest price, discount codes, flash sales.',how:'List price at parity with retailers. Reward with gifts, services and points instead of cash discounts.',kpi:'Price gap vs retailers never negative',loy:false},
+ {n:'Convenience & reach',l:['Convenience','& reach'],s:{target:3.5,today:2,mkt:5,ret:4.5},cust:'Quick to find and buy, stock available everywhere.',how:'Keep official marketplace stores as a discovery channel. One-tap app sign-in with Samsung Account, one-step checkout.',kpi:'App conversion rate ≥ 3%',loy:false},
+ {n:'Exclusives & early launch',l:['Exclusives &','early launch'],s:{target:5,today:2.5,mkt:2.5,ret:2},cust:'Something you can\'t buy anywhere else.',how:'Colours and storage sizes sold only on Samsung.com. 48-hour early pre-order, engraving, Galaxy + Watch + Buds bundles.',kpi:'≥ 20% of D2C orders include an exclusive product or bundle',loy:true},
+ {n:'Trade-in & upgrade',l:['Trade-in &','upgrade'],s:{target:5,today:2.5,mkt:1.5,ret:4},cust:'Good value for the old device, hassle-free upgrade.',how:'Online valuation of the old device in 2 minutes, collected at home or at the flagship. Annual upgrade plan with guaranteed buy-back.',kpi:'≥ 30% of phone orders include a trade-in',loy:true},
+ {n:'Expert advice',l:['Expert','advice'],s:{target:4.5,today:2,mkt:1.5,ret:3.5},cust:'Understand the product, choose the right device.',how:'Video call with flagship experts. An AI assistant that knows which devices the customer owns via Samsung Account.',kpi:'Close rate after consultation ≥ 15%',loy:false},
+ {n:'Fast O2O fulfilment',l:['Fast O2O','fulfilment'],s:{target:4.5,today:1.5,mkt:2.5,ret:4},cust:'Have the device the same day.',how:'2-hour pickup at the flagship with free setup and data transfer. Delivery from the nearest store.',kpi:'≥ 15% of online orders picked up in store',loy:false},
+ {n:'Peace of mind & after-sales',l:['Peace of mind','& after-sales'],s:{target:5,today:3.5,mkt:2.5,ret:3.5},cust:'Guaranteed genuine, fast repair if it breaks.',how:'Automatic warranty extension when buying direct. Care+ bundled. Priority repair with a loaner device.',kpi:'≥ 25% of orders with Care+, after-sales NPS ≥ 50',loy:true},
+ {n:'Personalised ecosystem',l:['Personalised','ecosystem'],s:{target:5,today:2,mkt:1,ret:1.5},cust:'Devices that work together, offers based on what you already own.',how:'Samsung Account knows which TV, phone and fridge the customer has. Offers on additional connected devices, points shared across all devices.',kpi:'Devices per customer from 1.4 to 2.2',loy:true}
+];
+const vis={target:true,today:true,mkt:true,ret:true};
+let sel=2;
+const gapOf=a=>a.s.target-Math.max(a.s.mkt,a.s.ret);
+const roleOf=g=>g>=1?['spear','Spearhead']:g>=-0.5?['par','Parity']:['cede','Deliberately cede'];
+const CX=300,CY=262,RR=165,N=AX.length;
+const ang=i=>-Math.PI/2+i*2*Math.PI/N;
+const pt=(i,v)=>[CX+Math.cos(ang(i))*RR*v/5,CY+Math.sin(ang(i))*RR*v/5];
+function drawRadar(){
+  let s='';
+  for(let r=1;r<=5;r++){
+    const p=AX.map((_,i)=>pt(i,r).join(',')).join(' ');
+    s+=`<polygon points="${p}" fill="none" stroke="var(--line)" stroke-width="${r===5?1.5:1}"/>`;
+    s+=`<text x="${CX+4}" y="${CY-RR*r/5+4}" font-size="10" fill="var(--muted)" font-family="JetBrains Mono,monospace">${r}</text>`;
+  }
+  AX.forEach((_,i)=>{const [x,y]=pt(i,5);s+=`<line x1="${CX}" y1="${CY}" x2="${x}" y2="${y}" stroke="var(--line)"/>`;});
+  [...SER].reverse().forEach(se=>{
+    if(!vis[se.k])return;
+    const p=AX.map((a,i)=>pt(i,a.s[se.k]).join(',')).join(' ');
+    const isT=se.k==='target',isD=se.k==='today';
+    s+=`<polygon points="${p}" fill="${isT?se.c:'none'}" fill-opacity="${isT?0.16:0}" stroke="${se.c}" stroke-width="${isT?2.8:2}" ${isD?'stroke-dasharray="5 4"':''} stroke-linejoin="round"/>`;
+    if(isT) AX.forEach((a,i)=>{const [x,y]=pt(i,a.s.target);s+=`<circle cx="${x}" cy="${y}" r="4" fill="${se.c}"/>`;});
+  });
+  AX.forEach((a,i)=>{
+    const c=Math.cos(ang(i)),sn=Math.sin(ang(i));
+    const x=CX+c*(RR+22),y=CY+sn*(RR+22);
+    const anchor=c>0.3?'start':c<-0.3?'end':'middle';
+    const y0=sn<-0.5?y-20:sn>0.5?y+10:y-6;
+    const role=roleOf(gapOf(a));
+    const col=role[0]==='spear'?'var(--accent)':role[0]==='cede'?'var(--warn)':'var(--ink)';
+    s+=`<g class="axis-hit${i===sel?' sel':''}" data-ax="${i}" tabindex="0" role="button" aria-label="${a.n}">`;
+    s+=`<text x="${x}" y="${y0}" text-anchor="${anchor}" font-size="13" font-weight="${i===sel?700:600}" fill="var(--ink)">`+a.l.map((t,j)=>`<tspan x="${x}" dy="${j?15:0}">${t}</tspan>`).join('')+`</text>`;
+    s+=`<text x="${x}" y="${y0+30}" text-anchor="${anchor}" font-size="10.5" font-weight="700" fill="${col}">${role[1]}</text>`;
+    s+=`</g>`;
+  });
+  const svg=$('radar');svg.innerHTML=s;
+  svg.querySelectorAll('.axis-hit').forEach(g=>{
+    const go=()=>{sel=+g.dataset.ax;refresh();};
+    g.addEventListener('click',go);
+    g.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();go();}});
+  });
+}
+function drawDetail(){
+  const a=AX[sel],g=gapOf(a),role=roleOf(g);
+  const best=a.s.mkt>=a.s.ret?'Marketplaces':'Retail chains';
+  $('detail').innerHTML=`<span class="tag ${role[0]} role">${role[1]}</span><h3 style="font-size:20px">${a.n}</h3>
+   <dl><dt>Customer gets</dt><dd>${a.cust}</dd><dt>How we do it</dt><dd>${a.how}</dd><dt>KPI to track</dt><dd>${a.kpi}</dd>
+   <dt>Loyalty support</dt><dd>${a.loy?'Yes. Tier benefits directly drive this axis.':'Indirect.'}</dd></dl>
+   <div class="gapbar">${SER.map(se=>`<div class="row"><span>${se.n}</span><span class="track"><span class="fill" style="display:block;width:${a.s[se.k]/5*100}%;background:${se.c}"></span></span><span class="num">${f1(a.s[se.k])}</span></div>`).join('')}</div>
+   <p class="note">Gap vs strongest competitor (${best}): <b class="num">${g>=0?'+':''}${f1(g)}</b> pts.</p>`;
+}
+function buildTable(){
+  let h=`<tr><th>Differentiation axis</th>${SER.map(se=>`<th>${se.n}</th>`).join('')}<th>Gap<small>vs strongest competitor</small></th><th>Role</th></tr>`;
+  AX.forEach((a,i)=>{
+    h+=`<tr data-r="${i}"><td class="ax">${a.n}</td>`+SER.map(se=>`<td><input type="number" min="1" max="5" step="0.5" id="sc-${i}-${se.k}" value="${a.s[se.k]}" aria-label="${a.n}, ${se.n}"></td>`).join('')+`<td class="gap"></td><td class="role"></td></tr>`;
+  });
+  $('mx').innerHTML=h;
+  $('mx').querySelectorAll('input').forEach(inp=>inp.addEventListener('input',()=>{
+    const [,i,k]=inp.id.split('-');let v=parseFloat(inp.value);if(isNaN(v))return;v=Math.max(1,Math.min(5,v));AX[+i].s[k]=v;sel=+i;refresh();}));
+  $('mx').querySelectorAll('td.ax').forEach(td=>td.addEventListener('click',()=>{sel=+td.parentNode.dataset.r;refresh();}));
+}
+function updTable(){
+  $('mx').querySelectorAll('tr[data-r]').forEach(tr=>{
+    const a=AX[+tr.dataset.r],g=gapOf(a),role=roleOf(g);
+    tr.querySelector('.gap').textContent=(g>=0?'+':'')+f1(g);
+    tr.querySelector('.gap').style.color=g>=1?'var(--good)':g<-0.5?'var(--bad)':'var(--muted)';
+    tr.querySelector('.role').innerHTML=`<span class="tag ${role[0]}">${role[1]}</span>`;
+    tr.classList.toggle('sel',+tr.dataset.r===sel);
+  });
+  $('spearN').textContent=AX.filter(a=>gapOf(a)>=1).length;
+}
+function refresh(){drawRadar();drawDetail();updTable();}
+document.querySelectorAll('[data-ser]').forEach(b=>b.addEventListener('click',()=>{
+  const k=b.dataset.ser;vis[k]=!vis[k];b.setAttribute('aria-pressed',vis[k]);drawRadar();}));
+buildTable();refresh();
+
+/* ---------- Loyalty funnel ---------- */
+const LK=['lN','lReg','lAct','lConv','lAov','lFreq','lCost'];
+const LU={lN:v=>f1(v)+'M',lReg:v=>v+'%',lAct:v=>v+'%',lConv:v=>v+'%',lAov:v=>'VND '+f1(v)+'M',lFreq:v=>f1(v),lCost:v=>f1(v)+'%'};
+const people=n=>n>=1e6?f1(n/1e6)+'M':fmt(n);
+function updLoyal(){
+  const v={};LK.forEach(k=>{v[k]=+$(k).value;$('o'+k).textContent=LU[k](v[k]);});
+  const dev=v.lN*1e6,mem=dev*v.lReg/100,act=mem*v.lAct/100,buy=act*v.lConv/100,orders=buy*v.lFreq;
+  const rev=orders*v.lAov/1000, net=rev*(1-v.lCost/100);
+  const steps=[['Devices sold via marketplaces & retailers','per year',dev],['Registered Samsung Account','customers Samsung knows by name',mem],['Still active','open the app, receive offers',act],['First purchase on Samsung channels','within 12 months',buy]];
+  $('funnel').innerHTML=steps.map(([a,b,n])=>`<div class="fstep"><span class="lab"><b>${a}</b>${b}</span><span class="bar" style="width:${Math.max(1.5,n/dev*100)}%"></span><span class="val">${people(n)}</span></div>`).join('');
+  $('lk1').textContent=fmt(rev);$('lk2').textContent=fmt(net);$('lk4').textContent=people(mem);
+  const d3=window.simD3||0,share=d3?rev/d3*100:0;
+  $('lk3').textContent=d3?f1(share)+'%':'—';
+  $('lk3d').textContent=d3?'of VND '+fmt(d3)+'bn Y3 D2C':'';
+  let m;
+  if(share>=15) m=`<b>Loyalty is the main engine of D2C.</b> This funnel generates about VND ${fmt(rev)}bn a year, or ${f1(share)}% of the year-3 D2C target. On top of that Samsung gains ${people(mem)} known customers.`;
+  else if(share>=7) m=`<b>A meaningful contribution, but not enough on its own.</b> Loyalty delivers ${f1(share)}% of the year-3 D2C target. The rest has to come from flagships, exclusives and B2B. The cheapest lever to grow it is the device registration rate.`;
+  else m=`<b>The funnel is still weak.</b> Only ${f1(share)}% of the year-3 D2C target. Check the Samsung Account registration rate and the first-purchase rate, the two usual leak points.`;
+  $('lverdict').innerHTML=m;
+}
+window.updLoyal=updLoyal;
+LK.forEach(k=>$(k).addEventListener('input',updLoyal));
+updLoyal();
+})();
+</script>
